@@ -1,0 +1,11 @@
+{
+  "draw.folder.structure.exclude": [
+    "**/__pycache__",
+    "**/.cdb",
+    "**/cdb",
+    "**/.git",
+    "**/build",
+    "**/dist",
+    "**/.venv",
+  ],
+}

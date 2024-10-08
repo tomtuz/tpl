@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "tpl"
+version = "0.1.0"
+description = "A CLI tool for project templating and management"
+authors = ["tomtuz"]
+readme = "README.md"
+packages = [{include = "src"}]
+include = [
+  "src/file_index/**/*",
+]
+
+[tool.poetry.dependencies]
+python = "~3.11"
+cryptography = "^3.4"
+cement = "^3.0.10"
+requests = "^2.26.0"
+click = "^8.1.7"
+
+[tool.poetry.dev-dependencies]
+pyinstaller = "^5.9.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+tpl = "src.cli:run"
+build = "scripts.build:main"
+
+# CLI helpers
+poi = "dev.helpers:install"
+test = "dev.helpers:test"
+lint = "dev.helpers:lint"
+lintF = "dev.helpers:lintF"
+format = "dev.helpers:format"
+formatF = "dev.helpers:formatF"
+typecheck = "dev.helpers:typecheck"

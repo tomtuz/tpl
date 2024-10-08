@@ -1,36 +1,48 @@
-
-```markdown
 # tpl - Template and Script Runner
 
-A simple tool to create Poetry projects and run custom scripts.
+A CLI tool for project templating, script running, and configuration management.
+
+## Prerequisites
+
+- Python 3.7 or later
+- Poetry (will be installed automatically if not present)
 
 ## Installation
 
-### Linux/macOS
-Run `./install.sh`
+The installation script will:
+- Install `Poetry` if not already installed
+- Build the standalone executable
+- Copy the executable and templates to the appropriate directory
+- Add the installation directory to your PATH
 
-### Windows
-Run `install.ps1` in PowerShell
+After installation, you may need to restart your terminal or reload your shell configuration for the `tpl` command to be available.
 
 ## Usage
 
-1. Create a new Poetry project:
-   ```
-   tpl poetry <project_name>
-   ```
+Once installed, you can use the `tpl` command from anywhere in your terminal:
 
-2. Run a script from the script template:
-   ```
-   tpl script <script_name>
-   ```
+  ```
+  tpl config <set/get/remove> <key> <value/-/->
+  tpl spawn <key> <variation/->
+  tpl template <key> <variation/->
+  tpl plugin <key> <variation/->
+  ```
 
-## Adding Custom Scripts
+## Development
 
-Place your custom scripts in the `templates/script/` directory. Supported file types:
-- Python (.py)
-- Bash (.sh)
+To set up the development environment:
 
-Example:
-- `templates/script/index.sh`
-- `templates/script/custom_script.py`
+1. Clone the repository
+2. Install Poetry: `curl -sSL https://install.python-poetry.org | python3 -`
+3. Install dependencies: `poetry install`
+4. Activate the virtual environment: `poetry shell`
 
+To build the standalone executable:
+
+```sh
+  poetry install
+  poetry run python build.py
+  poetry run python .\tests\0_test_file_spawn.py
+
+  poetry run tpl spawn central base
+```
