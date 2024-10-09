@@ -1,8 +1,24 @@
 {
+  "ruff.organizeImports": true,
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  "mypy-type-checker.preferDaemon": true,
+  "mypy-type-checker.reportingScope": "workspace",
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "mypy-type-checker.args": [
+      "--config-file",
+      "${workspaceFolder}/pyproject.toml"
+  ],
+  "mypy-type-checker.ignorePatterns": ["tests"],
+
   "draw.folder.structure.exclude": [
     "**/__pycache__",
     "**/.cdb",
-    "**/cdb",
     "**/.git",
     "**/build",
     "**/dist",

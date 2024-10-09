@@ -30,6 +30,7 @@ Once installed, you can use the `tpl` command from anywhere in your terminal:
 
 ## Development
 
+### Run
 To set up the development environment:
 
 1. Clone the repository
@@ -41,8 +42,39 @@ To build the standalone executable:
 
 ```sh
   poetry install
-  poetry run python build.py
+  build
   poetry run python .\tests\0_test_file_spawn.py
 
   poetry run tpl spawn central base
+```
+
+### CLI commands
+CLI commands are defined in a module file:
+- `/dev/cmd.py`
+
+**Command Examples:**
+
+```sh
+# 0. 'index'
+tpl       # 'poetry run src.cli:run'
+
+# 1. 'base'
+pop       # 'poetry run src.cli:run' (name agnostic alias)
+install   # 'poetry install'
+build     # 'poetry run build'
+test      # 'poetry pytest'
+refresh   # 'poetry lock && poetry install && poetry run build'
+typecheck # 'mypy .'
+
+# 2. 'lint', 'format'
+lint      # 'ruff check'
+lintF     # 'ruff check --fix'
+format    # 'ruff check --select I --fix && ruff format'
+```
+
+### Dependency Updating
+```sh
+1. > poetry show --outdated
+2. update pyproject.toml versions
+3. > refresh
 ```
