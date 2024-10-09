@@ -1,12 +1,15 @@
-import sys
 import os
 import subprocess
+import sys
+
 
 # Add the project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from src.core import config_manager
+from src.core import file_manager
 from src.plugins import eslint_config
-from src.core import config_manager, file_manager
+
 
 # Goal: Copy 'templates/poetry' template, Init the template.
 # 1. Set up test repo 'test-package'
@@ -17,13 +20,17 @@ from src.core import config_manager, file_manager
 # 4. Copied 'poetry_template'.
 # 5. Clean up
 
+
 def setup_test_repo(repo_dir):
     os.makedirs(repo_dir, exist_ok=True)
     with open(os.path.join(repo_dir, "package.json"), "w") as f:
-        f.write('{"name": "test-package", "version": "1.0.0", "scripts": {"build": "echo \\"Build completed\\""}}')
+        f.write(
+            '{"name": "test-package", "version": "1.0.0", "scripts": {"build": "echo \\"Build completed\\""}}'
+        )
     subprocess.run(["git", "init"], cwd=repo_dir, check=True)
     subprocess.run(["git", "add", "package.json"], cwd=repo_dir, check=True)
     subprocess.run(["git", "commit", "-m", "Initial commit"], cwd=repo_dir, check=True)
+
 
 def test_plugin_eslint():
     # Set up the test environment
@@ -36,7 +43,7 @@ def test_plugin_eslint():
     file_manager.ensure_dir(test_repo_dir)
     print(f"I [OK] Created repo_folder within: {test_repo_dir}")
 
-    eslintBaseUrl = config_manager.get_config_value('eslint.base')
+    eslintBaseUrl = config_manager.get_config_value("eslint.base")
     print(f"I [OK] eslintBaseUrl: {eslintBaseUrl}")
 
     assert os.path.exists(test_repo_dir), f"Config file not found at {test_repo_dir}"
@@ -55,6 +62,7 @@ def test_plugin_eslint():
         # Clean up the test repository
         # if os.path.exists(test_repo_dir):
         #     shutil.rmtree(test_repo_dir)
+
 
 if __name__ == "__main__":
     test_plugin_eslint()

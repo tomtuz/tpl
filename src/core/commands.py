@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
 
-import sys
-import os
 import importlib.util
-from src.core.config_manager import get_config_value, set_config_value, remove_config_value
-from src.core.utils import get_script_dir, get_file_index_path, getFile, print_all_indexes
-from src.core.plugin_loader import get_plugin, list_plugins
+import os
+import sys
+
+from src.core.config_manager import get_config_value
+from src.core.config_manager import remove_config_value
+from src.core.config_manager import set_config_value
+from src.core.plugin_loader import get_plugin
+from src.core.plugin_loader import list_plugins
+from src.core.utils import get_file_index_path
+from src.core.utils import get_script_dir
+from src.core.utils import getFile
+from src.core.utils import print_all_indexes
 
 
 SCRIPT_DIR = get_script_dir()
+
 
 # > tpl config get someKey
 # > tpl config remove someKey
@@ -24,7 +32,7 @@ def cmd_config(args):
     action = args[0]
     keyName = args[1]
     keyValue = args[2]
-    options = args[3]
+    # options = args[3]
 
     if action == "get":
         if len(args) != 2:
@@ -52,6 +60,7 @@ def cmd_config(args):
         print("Available actions: get, set, remove")
         sys.exit(1)
 
+
 # > tpl spawn
 # > tpl spawn biome
 # > tpl spawn biome base
@@ -68,18 +77,19 @@ def cmd_spawn(args):
 
     return getFile(filename, variant)
 
-    if (filename):
-      return getFile(filename)
+    if filename:
+        return getFile(filename)
     else:
-      print("[FAIL] file index doesn't exist.")
-      file_index_path = get_file_index_path()
-      print_all_indexes(file_index_path)
-      return 1
+        print("[FAIL] file index doesn't exist.")
+        file_index_path = get_file_index_path()
+        print_all_indexes(file_index_path)
+        return 1
+
 
 # > tpl config template
 # > tpl config template eslint
 # > tpl config template eslint variation
-def cmd_template(template_name, command, args):
+def cmd_template(args):
     if len(args) < 2:
         print("Usage: template <template_name> <command> [options]")
         return
@@ -95,25 +105,29 @@ def cmd_template(template_name, command, args):
 
     script_dir = get_script_dir()
     template_dir = os.path.join(script_dir, "templates", template_name)
-    
+
     if not os.path.exists(template_dir):
         print(f"Template '{template_name}' not found.")
         sys.exit(1)
-    
+
     command_script = os.path.join(template_dir, f"{command}.py")
-    
+
     if not os.path.exists(command_script):
         print(f"Command '{command}' not found for template '{template_name}'.")
         sys.exit(1)
-    
-    spec = importlib.util.spec_from_file_location(f"{template_name}_{command}", command_script)
+
+    spec = importlib.util.spec_from_file_location(
+        f"{template_name}_{command}", command_script
+    )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    
-    if hasattr(module, 'run'):
+
+    if hasattr(module, "run"):
         module.run(args)
     else:
-        print(f"The '{command}' command for '{template_name}' template is not properly implemented.")
+        print(
+            f"The '{command}' command for '{template_name}' template is not properly implemented."
+        )
         sys.exit(1)
 
 

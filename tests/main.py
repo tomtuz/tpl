@@ -1,18 +1,17 @@
-import unittest
 import os
+import unittest
 
 from src.core import config_manager
-from src.core.config_manager import (
-    get_config_dir,
-    ensure_config_dir,
-    load_config,
-    save_config,
-    get_config_value,
-    set_config_value,
-    remove_config_value,
-    encrypt_value,
-    decrypt_value,
-)
+from src.core.config_manager import decrypt_value
+from src.core.config_manager import encrypt_value
+from src.core.config_manager import ensure_config_dir
+from src.core.config_manager import get_config_dir
+from src.core.config_manager import get_config_value
+from src.core.config_manager import load_config
+from src.core.config_manager import remove_config_value
+from src.core.config_manager import save_config
+from src.core.config_manager import set_config_value
+
 
 class TestConfigManager(unittest.TestCase):
     def setUp(self):
@@ -21,7 +20,6 @@ class TestConfigManager(unittest.TestCase):
         config_manager.get_config_dir = lambda: self.test_config_dir
 
     def tearDown(self):
-
         config_manager.get_config_dir = self.original_get_config_dir
         if os.path.exists(self.test_config_dir):
             for file in os.listdir(self.test_config_dir):
@@ -48,7 +46,9 @@ class TestConfigManager(unittest.TestCase):
         set_config_value("sensitive_key", "sensitive_value", sensitive=True)
         encrypted_value = load_config()["sensitive_key"]
         self.assertNotEqual(encrypted_value, "sensitive_value")
-        self.assertEqual(get_config_value("sensitive_key", sensitive=True), "sensitive_value")
+        self.assertEqual(
+            get_config_value("sensitive_key", sensitive=True), "sensitive_value"
+        )
 
     def test_encryption_decryption(self):
         original_value = "test_value"
@@ -56,6 +56,7 @@ class TestConfigManager(unittest.TestCase):
         decrypted = decrypt_value(encrypted)
         self.assertNotEqual(original_value, encrypted)
         self.assertEqual(original_value, decrypted)
+
 
 if __name__ == "__main__":
     unittest.main()
