@@ -30,13 +30,9 @@ def copy_file(src, dest):
 def create_project_directory(project_name):
     folderPath = ""
     if platform.system() == "Windows":
-        folderPath = os.path.join(
-            os.environ.get("USERPROFILE"), ".config", "tpl", project_name
-        )
+        folderPath = os.path.join(os.environ.get("USERPROFILE"), ".config", "tpl", project_name)
     else:
-        folderPath = os.path.join(
-            os.path.expanduser("~"), ".config", "tpl", project_name
-        )
+        folderPath = os.path.join(os.path.expanduser("~"), ".config", "tpl", project_name)
 
     try:
         os.makedirs(folderPath, exist_ok=True)

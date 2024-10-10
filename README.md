@@ -1,80 +1,102 @@
-# tpl - Template and Script Runner
+# TPL - Template and Script Runner CLI
 
-A CLI tool for project templating, script running, and configuration management.
+A personal CLI tool for managing project templates, configurations, and plugins.
 
-## Prerequisites
+### Prerequisites
+- Python 3.11+ required
+- Poetry for dependency management
+- Global Configuration stored in `~/.config/tpl/config.json`
 
-- Python 3.7 or later
-- Poetry (will be installed automatically if not present)
+## Quick Start
 
-## Installation
+```bash
+# Quickstart
+poetry install
+poetry build
+pip install dist/tpl_cli-<version>-py3-none-any.whl
+tpl --help
 
-The installation script will:
-- Install `Poetry` if not already installed
-- Build the standalone executable
-- Copy the executable and templates to the appropriate directory
-- Add the installation directory to your PATH
+# Main commands
+tpl spawn                                  # Interactive project spawning
+tpl config [get|set|remove] [key] [value]  # Manage configurations
+tpl template [template_name] [command]     # Use templates
+tpl plugin [action] [plugin_name]          # Manage plugins
 
-After installation, you may need to restart your terminal or reload your shell configuration for the `tpl` command to be available.
+# Development commands
+poetry run pytest                          # Run tests
+poetry run build                           # Build the package
+poetry run update                          # Update packages
 
-## Usage
-
-Once installed, you can use the `tpl` command from anywhere in your terminal:
-
-  ```
-  tpl config <set/get/remove> <key> <value/-/->
-  tpl spawn <key> <variation/->
-  tpl template <key> <variation/->
-  tpl plugin <key> <variation/->
-  ```
-
-## Development
-
-### Run
-To set up the development environment:
-
-1. Clone the repository
-2. Install Poetry: `curl -sSL https://install.python-poetry.org | python3 -`
-3. Install dependencies: `poetry install`
-4. Activate the virtual environment: `poetry shell`
-
-To build the standalone executable:
-
-```sh
-  poetry install
-  build
-  poetry run python .\tests\0_test_file_spawn.py
-
-  poetry run tpl spawn central base
+# (dev.cmd) CLI heleper commands 
+install = "dev.cmd:install"
+test = "dev.cmd:test"
+refresh = "dev.cmd:refresh"
+typecheck = "dev.cmd:typecheck"
+lint = "dev.cmd:lint"
+lintF = "dev.cmd:lintF"
+format = "dev.cmd:format"
 ```
 
-### CLI commands
-CLI commands are defined in a module file:
-- `/dev/cmd.py`
+### Installing from PyPI
 
-**Command Examples:**
+```bash
+pip install tpl-cli
 
-```sh
-# 0. 'index'
-tpl       # 'poetry run src.cli:run'
+git clone https://github.com/your-repo/tpl.git
+cd tpl
 
-# 1. 'base'
-pop       # 'poetry run src.cli:run' (name agnostic alias)
-install   # 'poetry install'
-build     # 'poetry run build'
-test      # 'poetry pytest'
-refresh   # 'poetry lock && poetry install && poetry run build'
-typecheck # 'mypy .'
-
-# 2. 'lint', 'format'
-lint      # 'ruff check'
-lintF     # 'ruff check --fix'
-format    # 'ruff check --select I --fix && ruff format'
+poetry install
+poetry build
 ```
 
-### Dependency Updating
+## Key Files
+
+- `src/main.py`: Main entry point
+- `src/cli_selector/file.py`: Interactive CLI selector
+- `src/core/commands.py`: Command implementations
+- `src/core/config_manager.py`: Configuration management
+- `src/core/plugin_manager.py`: Plugin management
+- `tests/test_cli_commands.py`: CLI tests
+
+
+# Testing Externally
 ```sh
-1. > poetry show --outdated
-2. update pyproject.toml versions
-3. > refresh
+# setup and test in virtual env:
+python -m venv venv && venv/Scripts/activate
+cp C:\project-root\dist\tpl-0.1.0-py3-none-any.whl ./
+pip install --force-reinstall .\tpl-0.1.0-py3-none-any.whl
+tpl --help
 ```
+
+## Dependency management
+
+### Auto
+1. Run update script. Review the output.
+```sh
+poetry run python scripts/update_dependencies.py
+```
+2. The script will:
+    - Check for outdated packages
+    - Update each package individually
+    - Run tests after each update
+    - Revert the update if tests fail
+3. After the script completes, review the changes in `pyproject.toml` and `poetry.lock`.
+4. If everything looks good, commit the changes:
+    - `git add pyproject.toml poetry.lock`
+    - `git commit -m "Update dependencies`
+
+### Manual
+```sh
+# Show outdated packages
+poetry show --outdated
+# Update all packages
+poetry update
+# Update specific packages
+poetry update package1 package2
+# Add a new package
+poetry add package_name
+# Remove a package
+poetry remove package_name
+```
+
+Always run tests after updating dependencies to ensure compatibility.

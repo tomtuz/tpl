@@ -2,15 +2,17 @@ import os
 import unittest
 
 from src.core import config_manager
-from src.core.config_manager import decrypt_value
-from src.core.config_manager import encrypt_value
-from src.core.config_manager import ensure_config_dir
-from src.core.config_manager import get_config_dir
-from src.core.config_manager import get_config_value
-from src.core.config_manager import load_config
-from src.core.config_manager import remove_config_value
-from src.core.config_manager import save_config
-from src.core.config_manager import set_config_value
+from src.core.config_manager import (
+    decrypt_value,
+    encrypt_value,
+    ensure_config_dir,
+    get_config_dir,
+    get_config_value,
+    load_config,
+    remove_config_value,
+    save_config,
+    set_config_value,
+)
 
 
 class TestConfigManager(unittest.TestCase):
@@ -46,9 +48,7 @@ class TestConfigManager(unittest.TestCase):
         set_config_value("sensitive_key", "sensitive_value", sensitive=True)
         encrypted_value = load_config()["sensitive_key"]
         self.assertNotEqual(encrypted_value, "sensitive_value")
-        self.assertEqual(
-            get_config_value("sensitive_key", sensitive=True), "sensitive_value"
-        )
+        self.assertEqual(get_config_value("sensitive_key", sensitive=True), "sensitive_value")
 
     def test_encryption_decryption(self):
         original_value = "test_value"

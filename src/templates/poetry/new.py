@@ -2,8 +2,7 @@ import os
 import subprocess
 import sys
 
-from src.core.config_manager import get_config_value
-from src.core.config_manager import set_config_value
+from src.core.config_manager import get_config_value, set_config_value
 
 
 def check_poetry_installed():
@@ -21,9 +20,7 @@ def check_poetry_installed():
 def create_poetry_project(project_name):
     if not check_poetry_installed():
         print("Poetry is not installed. Please install Poetry and try again.")
-        print(
-            "Visit https://python-poetry.org/docs/#installation for installation instructions."
-        )
+        print("Visit https://python-poetry.org/docs/#installation for installation instructions.")
         sys.exit(1)
 
     try:

@@ -1,12 +1,10 @@
 import os
 import sys
 
-
 # Add the project root to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.core import file_manager
-
 
 # Goal: Copy 'templates/poetry' template, Init the template.
 # 1. Create 'test_project' folder. Validate.
@@ -22,9 +20,7 @@ def test_file_operations():
     # Test creating a project directory
     test_project = "test_project"
     project_path = file_manager.create_project_directory(test_project)
-    assert os.path.exists(
-        project_path
-    ), f"Project directory {project_path} was not created"
+    assert os.path.exists(project_path), f"Project directory {project_path} was not created"
     print(f"1. [OK] - Created folder at path: {project_path}")
 
     # Test copying a file
@@ -39,17 +35,13 @@ def test_file_operations():
 
     # Test getting template path
     template_path = file_manager.get_template_path("poetry")
-    assert os.path.exists(
-        template_path
-    ), f"Template path {template_path} does not exist"
+    assert os.path.exists(template_path), f"Template path {template_path} does not exist"
     print(f"3. [OK] - Received path of template 'poetry': {project_path}")
 
     # Test copying template
     template_dest = os.path.join(project_path, "poetry_template")
     assert file_manager.copy_template("poetry", template_dest), "Template copy failed"
-    assert os.path.exists(
-        template_dest
-    ), f"Template destination {template_dest} does not exist"
+    assert os.path.exists(template_dest), f"Template destination {template_dest} does not exist"
     print("4. [OK] - Copied 'poetry_template':")
     print("[FROM]: [source]/poetry_template")
     print(f"[TO]: {template_dest}")

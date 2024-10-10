@@ -1,0 +1,10 @@
+import argparse
+
+def main(name: str):
+    print(f"Hello, {name}!")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="A simple CLI greeting program.")
+    parser.add_argument("name", help="The name to greet")
+    args = parser.parse_args()
+    main(args.name)

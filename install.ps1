@@ -11,9 +11,18 @@ if (!(Get-Command poetry -ErrorAction SilentlyContinue)) {
     (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
 }
 
+# ~/username/.config/tpl
 $tplDir = "$env:USERPROFILE\.config\tpl"
+
+# ~/username/.config/templates
 $tplTemplates = "$tplDir\templates"
+
+# ~/username/.config/tpl
 $tplBin = "$tplDir"
+
+Write-Host "tplDir: $tplDir"
+Write-Host "tplTemplates: $tplTemplates"
+Write-Host "tplBin: $tplBin"
 
 # Create directory for tpl
 New-Item -ItemType Directory -Force -Path $tplDir | Out-Null

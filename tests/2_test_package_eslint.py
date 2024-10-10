@@ -2,14 +2,11 @@ import os
 import subprocess
 import sys
 
-
 # Add the project root to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.core import config_manager
-from src.core import file_manager
+from src.core import config_manager, file_manager
 from src.plugins import eslint_config
-
 
 # Goal: Copy 'templates/poetry' template, Init the template.
 # 1. Set up test repo 'test-package'
@@ -24,9 +21,7 @@ from src.plugins import eslint_config
 def setup_test_repo(repo_dir):
     os.makedirs(repo_dir, exist_ok=True)
     with open(os.path.join(repo_dir, "package.json"), "w") as f:
-        f.write(
-            '{"name": "test-package", "version": "1.0.0", "scripts": {"build": "echo \\"Build completed\\""}}'
-        )
+        f.write('{"name": "test-package", "version": "1.0.0", "scripts": {"build": "echo \\"Build completed\\""}}')
     subprocess.run(["git", "init"], cwd=repo_dir, check=True)
     subprocess.run(["git", "add", "package.json"], cwd=repo_dir, check=True)
     subprocess.run(["git", "commit", "-m", "Initial commit"], cwd=repo_dir, check=True)

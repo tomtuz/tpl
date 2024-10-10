@@ -1,0 +1,12 @@
+name: python_project
+description: A basic Python project template with a main file and a test file
+files:
+  - main.py
+  - test_main.py
+  - requirements.txt
+variants:
+  cli:
+    - main.py
+post_actions:
+  - pip install -r requirements.txt
+  - pytest test_main.py

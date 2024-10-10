@@ -4,35 +4,42 @@ version = "0.1.0"
 description = "A CLI tool for project templating and management"
 authors = ["tomtuz"]
 readme = "README.md"
-packages = [{include = "src"}]
+packages = [{include = "src"}, {include = "definitions.py"}]
 include = [
   "src/file_index/**/*",
+  "src/templates/**/*",
+  "definitions.py",
+]
+classifiers = [
+    "Private :: Do Not Upload",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 
 [tool.poetry.dependencies]
-python = "~3.11"
+python = "^3.11"
 cryptography = "^43.0.1"
-cement = "^3.0.10"
-requests = "^2.26.0"
-click = "^8.1.7"
+typer = "^0.9.0"
+questionary = "^2.0.1"
+pyyaml = "^6.0"
+rich = "^13.0.0"
 
-[tool.poetry.dev-dependencies]
-pyinstaller = "^6.10.0"
+[tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
 ruff = "^0.6.3"
 pre-commit = "^4.0.1"
 mypy = "^1.11.2"
-types-requests = "^2.32.0"
-types-click = "^7.1.8"
 
 [tool.poetry.scripts]
-# CLI index
-tpl = "src.cli:run"
+tpl = "src.main:app"
+build = "scripts.build:main"
 
 # CLI main
-pop = "dev.cmd:pop"
 install = "dev.cmd:install"
-build = "dev.cmd:build"
 test = "dev.cmd:test"
 refresh = "dev.cmd:refresh"
 typecheck = "dev.cmd:typecheck"
@@ -43,70 +50,49 @@ lintF = "dev.cmd:lintF"
 format = "dev.cmd:format"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
-src = ["src"]
 fix = true
 show-fixes = true
+line-length = 120
+src = ["src", "dev"]
 output-format = "full"
-target-version = "py312"
-line-length = 88
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-skip-magic-trailing-comma = false
-line-ending = "auto"
-
+target-version = "py311"
 
 [tool.ruff.lint]
-unfixable = [
-    "ERA", # do not autoremove commented out code
-]
 select = [
-    "B",  # flake8-bugbear
-    "E",  # pycodestyle error
-    "F",  # pyflakes
-    "I",  # isort
-    "UP", # pyupgrade
-    "W",  # pycodestyle warning
+  "E", # pycodestyle error
+  "F", # pyflakes
+  "I", # isort
+  "B"  # flake8-bugbear
 ]
 
-[tool.ruff.lint.isort]
-force-single-line = true
-lines-between-types = 1
-lines-after-imports = 2
-order-by-type = false
+# "B",  # flake8-bugbear
+# "E",  # pycodestyle error
+# "F",  # pyflakes
+# "I",  # isort
+# "UP", # pyupgrade
+# "W",  # pycodestyle warning
 
-[tool.ruff.lint.flake8-tidy-imports]
-ban-relative-imports = "all"
+ignore = [
+  "E501",  # Line length
+  "B008",  # Naming convention
+  "B904",  # Assert in non-test
+  "UP007"  # Unused variable
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"] # Unused import
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.11"
 strict = true
-pretty = true
-local_partial_types = true
-follow_imports = "silent"
-check_untyped_defs = true
-disallow_untyped_defs = false
-warn_return_any = true
-warn_unreachable = true
-warn_unused_configs = true
 ignore_missing_imports = true
-disable_error_code = ["no-untyped-def"]
-
-[[tool.mypy.overrides]]
-module = "tests.test_sample"
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = "tests.*"
-ignore_errors = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests/"]
+testpaths = ["tests"]

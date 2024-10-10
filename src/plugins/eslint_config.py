@@ -2,9 +2,7 @@ import os
 import subprocess
 import sys
 
-from src.core import file_manager
-from src.core import utils
-
+from src.core import file_manager, utils
 
 # Goal: Setup ESLint package. Build the package. Link the package package globally.
 # 1. Set up test repo 'test-package'
@@ -52,7 +50,8 @@ def install_eslint_config(repo_dir, repo_url):
     if not corepack_installed and not pnpm_installed:
         print("Error: Neither corepack nor pnpm is installed or in the system PATH.")
         print(
-            "Please install either corepack or pnpm and ensure it's in your system PATH before running this command."
+            "Please install either corepack or pnpm and ensure",
+            " it's in your system PATH before running this command.",
         )
         sys.exit(1)
 
@@ -88,9 +87,7 @@ def validate_installation(repo_dir):
 
     # Check if the package is globally linked
     try:
-        result = subprocess.run(
-            ["pnpm", "list", "-g"], capture_output=True, text=True, check=True
-        )
+        result = subprocess.run(["pnpm", "list", "-g"], capture_output=True, text=True, check=True)
         if os.path.basename(repo_dir) not in result.stdout:
             print("Error: Package is not globally linked.")
             return False

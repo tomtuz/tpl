@@ -2,16 +2,28 @@ import importlib.util
 import os
 import sys
 
+from src.core.file_manager import get_config_dir
+
 
 class PluginLoader:
     def __init__(self):
         self.plugins = {}
-        self.plugin_dir = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), "plugins"
-        )
+        self.plugin_dir = os.path.join(get_config_dir(), "plugins")
+
+        # Ensure the plugins directory exists
+        os.makedirs(self.plugin_dir, exist_ok=True)
 
     def load_plugins(self):
-        for filename in os.listdir(self.plugin_dir):
+        print("plugin_dir: ", self.plugin_dir)
+        if not os.path.exists(self.plugin_dir):
+            print(f"Plugin directory does not exist: {self.plugin_dir}")
+            return
+
+        dirArr = os.listdir(self.plugin_dir)
+        print("listdir: ", dirArr)
+
+        # for filename in os.listdir(self.plugin_dir):
+        for filename in dirArr:
             if filename.endswith(".py") and not filename.startswith("__"):
                 plugin_name = filename[:-3]
                 plugin_path = os.path.join(self.plugin_dir, filename)
@@ -22,9 +34,7 @@ class PluginLoader:
                 if hasattr(module, "register_plugin"):
                     self.plugins[plugin_name] = module.register_plugin()
                 else:
-                    print(
-                        f"Warning: Plugin '{plugin_name}' does not have a register_plugin function."
-                    )
+                    print(f"Warning: Plugin '{plugin_name}' " "does not have a register_plugin function.")
 
     def get_plugin(self, plugin_name):
         return self.plugins.get(plugin_name)

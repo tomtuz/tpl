@@ -1,6 +1,5 @@
 from logging.config import dictConfig
 
-
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,

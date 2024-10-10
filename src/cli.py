@@ -1,49 +1,45 @@
 import click
 
-from src.main import main
-
-
-# from src.core.plugin_loader import load_plugins, list_plugins, get_plugin
+from src import main
 
 
 @click.group()
 def cli() -> None:
+    print("> src.cli.cli")
     """Default CLI"""
     pass
 
-
 @cli.command()
-def dev() -> None:
-    """Run the main() functionality"""
-    main()
-
-
-@cli.command()
-def other() -> None:
-    """Run other command"""
-    click.echo("Running other...")
+@click.argument("args", nargs=-1)
+def config(args):
+    print("> sc.cli.config")
+    """Run the config command with arguments"""
+    main(command="config", args=list(args))
 
 
 @cli.command()
 @click.argument("args", nargs=-1)
 def spawn(args):
     """Run the spawn command with arguments"""
-    main(command="spawn", args=args)
+    print("> src.cli.spawn")
+    main(command="spawn", args=list(args))
 
 
 @cli.command()
 @click.argument("args", nargs=-1)
 def template(args):
     """Run the template command with arguments"""
-    main(command="template", args=args)
+    print("> src.cli.template")
+    main(command="template", args=list(args))
 
 
 @cli.command()
 @click.argument("args", nargs=-1)
 def plugin(args):
     """Run the plugin command with arguments"""
-    main(command="plugin", args=args)
+    print("> src.cli.plugin")
+    main(command="plugin", args=list(args))
 
 
-def run() -> None:
+if __name__ == "__main__":
     cli()

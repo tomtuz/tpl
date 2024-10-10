@@ -1,40 +1,55 @@
 import subprocess
+import sys
 
 
-def tpl() -> None:
-    subprocess.run(["poetry", "run", "src.cli:run"])
-
-# (name agnostic alias)
-def pop() -> None:
-    subprocess.run(["poetry", "run", "src.cli:run"])
+# cmd_wrapper
+def run_command(*args, **kwargs):
+    try:
+        subprocess.run(*args, **kwargs, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Command '{' '.join(e.cmd)}'\n", f"Failed with exit code {e.returncode}")
+        sys.exit(1)
 
 def install() -> None:
-    subprocess.run(["poetry", "install"])
+    print("> install")
+    run_command(["poetry", "install"])
 
-def build() -> None:
-    subprocess.run(["poetry", "run", "scripts.build:main"])
+def update() -> None:
+    print("> update")
+    run_command(["poetry", "run", "scripts.update_dependencies:main"])
 
 def test() -> None:
-    subprocess.run(["pytest"])
+    print("> test")
+    run_command(["pytest"])
+
 
 def refresh() -> None:
-    subprocess.run(["poetry", "lock"])
+    print("> refresh")
+    run_command(["poetry", "lock"])
     install()
-    build()
+    run_command(["poetry", "build"])
+
 
 def typecheck() -> None:
-    subprocess.run(["mypy", "."])
+    print("> typecheck")
+    run_command(["mypy", "."])
+
 
 # lint / formatting
 
+
 def lint() -> None:
-    subprocess.run(["ruff", "check"])
+    print("> lint")
+    run_command(["ruff", "check"])
 
 
 def lintF() -> None:
-    subprocess.run(["ruff", "check", "--fix"])
+    print("> lintF")
+    run_command(["ruff", "check", "--fix"])
+
 
 # sort imports + lint
 def format() -> None:
-    subprocess.run(["ruff", "check", "--select", "I", "--fix"])
-    subprocess.run(["ruff", "format"])
+    print("> format")
+    run_command(["ruff", "check", "--select", "I", "--fix"])
+    run_command(["ruff", "format"])
