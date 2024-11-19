@@ -14,9 +14,8 @@ from src.utils.helpers import Logger
 app = typer.Typer(rich_markup_mode="markdown")
 console = Console()
 
-Logger.create_logger("main", __package__, True)
+Logger.create_logger(f"{__name__}.log", __package__, True)
 logger = logging.getLogger(__name__)
-
 
 @app.command()
 def config(

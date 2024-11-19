@@ -10,9 +10,35 @@ A personal CLI tool for managing project templates, configurations, and plugins.
 ## Quick Start
 
 ```bash
-# Quickstart
+
+# (Optional - 'pyenv')
+# 1. Install python version from .python-version
+poetry config virtualenvs.path ".venv"
+poetry config virtualenvs.prefer-active-python true
+pyenv install
+
+# 2. verify Python version
+pyenv local # verify python version
+python3 --version # verify python version
+
+# 3. Set Python to Poetry and create workspace
+poetry env use 3.11.7
 poetry install
-poetry build
+
+# 4. Ensure Python version is correct
+poetry env info
+poetry env info --path
+poetry env list
+poetry env remove --all
+
+# 5. Select Interpreter in VSCode
+# -----
+
+During poetry install the env will be created.
+# Quickstart
+poetry shell # (Ensure interpreter is active. Should be automatic, but check .python-version)
+poetry install
+poetry run build # 'poetry build' works too, but without scripts/build.py handler
 pip install dist/tpl_cli-<version>-py3-none-any.whl
 tpl --help
 
@@ -27,7 +53,7 @@ poetry run pytest                          # Run tests
 poetry run build                           # Build the package
 poetry run update                          # Update packages
 
-# (dev.cmd) CLI heleper commands 
+# (dev.cmd) CLI heleper commands
 install = "dev.cmd:install"
 test = "dev.cmd:test"
 refresh = "dev.cmd:refresh"

@@ -22,8 +22,15 @@ class Logger:
             fmt="%(asctime)s %(levelname)s:%(name)s:%(funcName)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
         )
 
+        if not os.path.isdir('logs'):
+            os.makedirs("logs", exist_ok=True)
+
         if enabled:
-            debug_log_handler = logging.handlers.RotatingFileHandler(debug_filename, encoding="utf-8", mode="w")
+            debug_log_handler = logging.handlers.RotatingFileHandler(
+                f"logs/{debug_filename}",
+                encoding="utf-8",
+                mode="w"
+              )
             debug_log_handler.setLevel(logging.DEBUG)
             debug_log_handler.setFormatter(formatter)
             logger.addHandler(debug_log_handler)

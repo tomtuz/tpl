@@ -6,4 +6,4 @@ docs
 build
 dist
 tpl.spec
-*.log
+logs
