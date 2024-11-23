@@ -7,14 +7,14 @@ import typer
 from rich.console import Console
 
 from src.cli_selector.file import cli_selector_spawn
-from src.core.commands import cmd_config, cmd_plugin, cmd_spawn, cmd_template
+from src.core.commands import cmd_config, cmd_plugin, cmd_spawn, cmd_template, cmd_repository
 from src.core.plugin_loader import load_plugins
 from src.utils.helpers import Logger
 
 app = typer.Typer(rich_markup_mode="markdown")
 console = Console()
 
-Logger.create_logger(f"{__name__}.log", __package__, True)
+Logger.create_logger(f"{__name__}.log", __package__, False)
 logger = logging.getLogger(__name__)
 
 @app.command()
@@ -86,6 +86,16 @@ def plugin(
         cmd_plugin(args)
     except Exception as e:
         logger.error(f"Error in plugin command: {str(e)}")
+        console.print(f"[bold red]Error:[/bold red] {str(e)}")
+        raise typer.Exit(code=1) from e
+
+@app.command()
+def repository():
+    """Use repository templates"""
+    try:
+        cmd_repository()
+    except Exception as e:
+        logger.error(f"Error in repository command: {str(e)}")
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
         raise typer.Exit(code=1) from e
 

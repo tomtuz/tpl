@@ -15,11 +15,19 @@ from src.core.plugin_manager import (
     validate_plugin,
 )
 from src.core.spawn_manager import list_templates, spawn_file, spawn_project
+from src.core import file_manager
 from src.utils.command_utils import handle_command_errors, log_command_args, validate_args
 from src.utils.helpers import get_script_dir
+from src.core.git_manager import select_repository, clone_repo
 
 SCRIPT_DIR = get_script_dir()
 logger = logging.getLogger(__name__)
+
+import questionary
+import typer
+from rich.console import Console
+console = Console()
+app = typer.Typer(rich_markup_mode="markdown")
 
 
 class CommandError(Exception):
@@ -41,6 +49,9 @@ class TemplateError(CommandError):
     """Exception for template-related errors."""
     pass
 
+class RepositoryError(CommandError):
+    """Exception for repository-related errors."""
+    pass
 
 class PluginError(CommandError):
     """Exception for plugin-related errors."""
@@ -114,6 +125,7 @@ def cmd_spawn(args: list[str]) -> None:
         cli_selector_spawn()
     elif args[0] == "list":
         templates = list_templates()
+        logger.info("Listing available templates: %s", templates)
         print("Available templates:")
         for template in templates:
             print(f"  {template}")
@@ -129,9 +141,11 @@ def cmd_spawn(args: list[str]) -> None:
 
         if os.path.isdir(os.path.join(SCRIPT_DIR, "templates", template_name)):
             spawn_project(template_name, name)
+            logger.info("Project '%s' spawned successfully from template '%s'.", name, template_name)
             print(f"Project '{name}' spawned successfully from template '{template_name}'.")
         else:
             spawn_file(template_name, name, variant)
+            logger.info("File '%s' spawned successfully from template '%s'.", name, template_name)
             print(f"File '{name}' spawned successfully from template '{template_name}'.")
 
 
@@ -156,25 +170,38 @@ def cmd_template(args: list[str]) -> None:
 
     log_command_args("template", ["template_name", "command", "options"], args)
 
-    template_dir = os.path.join(SCRIPT_DIR, "templates", template_name)
-    command_script = os.path.join(template_dir, f"{command}.py")
+    # template_dir = os.path.join(SCRIPT_DIR, "templates", template_name)
+    template_dir = file_manager.get_template_path("poetry")
+    # command_script = os.path.join(template_dir, f"{command}.py")
 
-    if not os.path.exists(template_dir):
-        raise TemplateError(f"Template '{template_name}' not found.")
+    print("template_dir: ", template_dir)
 
-    if not os.path.exists(command_script):
-        raise TemplateError(f"Command '{command}' not found for template '{template_name}'.")
+    # Test copying template
+    assert file_manager.copy_template("poetry", template_dir), "Template copy failed"
 
-    spec = importlib.util.spec_from_file_location(f"{template_name}_{command}", command_script)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    assert os.path.exists(template_dir), f"Template destination {template_dir} does not exist"
 
-    if hasattr(module, "run"):
-        module.run(options)
-    else:
-        raise TemplateError(f"The '{command}' command for '{template_name}' template is not properly implemented.")
+    print("4. [OK] - Copied 'poetry_template':")
+    print("[FROM]: [source]/poetry_template")
+    print(f"[TO]: {template_dir}")
+
+    # if not os.path.exists(template_dir):
+    #     raise TemplateError(f"Template '{template_name}' not found.")
+
+    # if not os.path.exists(command_script):
+    #     raise TemplateError(f"Command '{command}' not found for template '{template_name}'.")
+
+    # spec = importlib.util.spec_from_file_location(f"{template_name}_{command}", command_script)
+    # module = importlib.util.module_from_spec(spec)
+    # spec.loader.exec_module(module)
+
+    # if hasattr(module, "run"):
+    #     module.run(options)
+    # else:
+    #     raise TemplateError(f"The '{command}' command for '{template_name}' template is not properly implemented.")
 
 
+# > tpl plugin
 @validate_args(1, PluginError, "Insufficient arguments. Usage: plugin <action> [args]")
 @handle_command_errors(PluginError)
 def cmd_plugin(args: list[str]) -> None:
@@ -193,6 +220,7 @@ def cmd_plugin(args: list[str]) -> None:
 
     if action == "list":
         plugins = list_plugins()
+        logger.info("Listing available plugins: %s", plugins)
         print("Available plugins:")
         for plugin in plugins:
             print(f"  {plugin}")
@@ -202,6 +230,7 @@ def cmd_plugin(args: list[str]) -> None:
         plugin_name, plugin_path = args[1], args[2]
         if validate_plugin(plugin_path):
             install_plugin(plugin_path)
+            logger.info("Plugin '%s' installed successfully from path '%s'.", plugin_name, plugin_path)
             print(f"Plugin '{plugin_name}' installed successfully.")
         else:
             raise PluginError(f"Invalid plugin: {plugin_name}")
@@ -211,6 +240,7 @@ def cmd_plugin(args: list[str]) -> None:
         plugin_name, new_plugin_path = args[1], args[2]
         if validate_plugin(new_plugin_path):
             update_plugin(plugin_name, new_plugin_path)
+            logger.info("Plugin '%s' updated successfully to path '%s'.", plugin_name, new_plugin_path)
             print(f"Plugin '{plugin_name}' updated successfully.")
         else:
             raise PluginError(f"Invalid plugin update: {plugin_name}")
@@ -219,6 +249,7 @@ def cmd_plugin(args: list[str]) -> None:
             raise PluginError("Plugin name is required for removal.")
         plugin_name = args[1]
         remove_plugin(plugin_name)
+        logger.info("Plugin '%s' removed successfully.", plugin_name)
         print(f"Plugin '{plugin_name}' removed successfully.")
     elif action == "run":
         if len(args) < 2:
@@ -228,7 +259,25 @@ def cmd_plugin(args: list[str]) -> None:
         plugin = get_plugin(plugin_name)
         if plugin:
             plugin.run(options)
+            logger.info("Plugin '%s' run with options: %s", plugin_name, options)
         else:
             raise PluginError(f"Unknown plugin: {plugin_name}")
     else:
         raise PluginError(f"Unknown plugin action: {action}")
+
+
+# > tpl repository
+@handle_command_errors(RepositoryError)
+def cmd_repository() -> None:
+    """Main command to select and clone a repository."""
+    logger.info("\n -- cmd_repository --\n")
+    selected_repo_url = select_repository()
+
+    if selected_repo_url:
+        repo_path = questionary.text("Enter the path to clone the repository:", default=".").ask()
+        logger.info("Cloning repository '%s' to path '%s'.", selected_repo_url, repo_path)
+        clone_repo(selected_repo_url, repo_path)
+        logger.info("Repository cloned successfully.")
+    else:
+        logger.warning("No repository selected or user exited.")
+        console.print("[bold yellow]No repository selected or user exited.[/bold yellow]")

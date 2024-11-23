@@ -9,6 +9,21 @@ A personal CLI tool for managing project templates, configurations, and plugins.
 
 ## Quick Start
 
+```sh
+
+# (Linux) Run install script
+# This links local package to $PATH with 'pipx'
+./install.sh
+
+# then just build and run
+poetry build && tpl
+# OR build and run in external path
+poetry build
+tpl
+
+```
+
+## Debug installation
 ```bash
 
 # (Optional - 'pyenv')

@@ -18,6 +18,12 @@ from src.types.struct import (
     Template,
 )
 
+from src.types.repo_struct import (
+    RepositoryStruct,
+)
+
+from src.repositories.main import get_repositories
+
 logger = logging.getLogger(__name__)
 
 
@@ -92,6 +98,13 @@ def select_items(category: str, items: list[str]) -> list[str] | None:
         return None
     return selected
 
+def questionary_prompt(prompt, list_options, default):
+    value = questionary.select(
+        prompt,
+        list_options,
+        default,
+    ).ask()
+    return value
 
 def process_dependency_tree(dependency_tree: DependencyTree, preset: list[str]) -> dict[str, Any] | None:
     selections = {}
@@ -111,6 +124,68 @@ def process_dependency_tree(dependency_tree: DependencyTree, preset: list[str]) 
                 return None
             selections[item] = result
     return selections
+
+def cli_spawn_generic_list():
+    logger.info("\n-- cli_spawn_generic_list --\n")
+
+    logger.info(f"Loading repositories...")
+    root_structure = load_repositories()
+
+    logger.info(f"root_structure: ${root_structure.repositories}")
+
+    if root_structure is None:
+        logger.error("Failed to load git repositories. Exiting.")
+        return
+
+    # Create a mapping from display titles to actual repository URLs
+    choice_map = {f'{repo["name"]} - {repo["url"]}': repo["url"] for repo in root_structure.repositories}
+
+    # Add the "Exit" option
+    choices = list(choice_map.keys()) + ["Exit"]
+
+    # Use questionary to select a repository
+    selected_repository = questionary.select(
+        "Choose a preset (or 'Exit' to quit):",
+        choices=choices,
+    ).ask()
+
+    if selected_repository == "Exit":
+        logger.info("Exiting the CLI selector.")
+        return
+
+    # Return the actual repository URL if a repository is selected, otherwise return None
+    logger.info(f"Selected preset: {selected_repository}")
+    selected_choice = choice_map.get(selected_repository)
+    return selected_choice
+
+def load_repositories() -> RepositoryStruct | None:
+    try:
+        logger.info("\n-- load_repositories --\n")
+        repository_struct: RepositoryStruct = get_repositories()
+
+        for repo in repository_struct.repositories:
+              logger.info(f"[REPO]: ${repo.items()}")
+
+        logger.info("\n-- file_index --\n")
+        file_index = []
+
+        for item in repository_struct.repositories:
+            file_index.append(
+                dict(
+                  key=f"{item['name']} - {item['url']}",
+                  value=item,
+                )
+            )
+            # file_index.append(f"{item['name']} - {item['url']}")
+
+        repository_struct.file_index = file_index
+        logger.info(f"file_index: ${file_index}")
+
+        return repository_struct
+
+    except Exception as e:
+        logger.error(f"An unexpected error occurred while handling RepositoryStruct data: {e}")
+    return None
 
 
 def cli_selector_spawn():

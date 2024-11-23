@@ -3,7 +3,7 @@ import logging
 from collections.abc import Callable
 from typing import Any
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(f"{__name__}.log")
 
 
 def validate_args(min_args: int, error_class: type, error_message: str) -> Callable:

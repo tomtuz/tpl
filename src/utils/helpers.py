@@ -22,7 +22,7 @@ class Logger:
             fmt="%(asctime)s %(levelname)s:%(name)s:%(funcName)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
         )
 
-        if not os.path.isdir('logs'):
+        if enabled and not os.path.isdir('logs'):
             os.makedirs("logs", exist_ok=True)
 
         if enabled:
