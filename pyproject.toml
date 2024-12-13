@@ -50,10 +50,10 @@ build = "scripts.build:main"
 # refresh = "scripts.dev.cmd:refresh"
 # typecheck = "scripts.dev.cmd:typecheck"
 
-# # CLI lint / format
-# lint = "scripts.dev.cmd:lint"
-# lintF = "scripts.dev.cmd:lintF"
-# format = "scripts.dev.cmd:format"
+# CLI lint / format
+lint = "scripts.dev.cmd:lint"
+lintF = "scripts.dev.cmd:lintF"
+format = "scripts.dev.cmd:format"
 
 [build-system]
 requires = ["poetry-core", "setuptools"]
@@ -85,6 +85,7 @@ select = [
 ignore = [
   "E501",  # Line length
   "B008",  # Naming convention
+  "F841",  # Assigned but unused
   "B904",  # Assert in non-test
   "UP007"  # Unused variable
 ]

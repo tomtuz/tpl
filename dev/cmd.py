@@ -10,13 +10,16 @@ def run_command(*args, **kwargs):
         print(f"Error: Command '{' '.join(e.cmd)}'\n", f"Failed with exit code {e.returncode}")
         sys.exit(1)
 
+
 def install() -> None:
     print("> install")
     run_command(["poetry", "install"])
 
+
 def update() -> None:
     print("> update")
     run_command(["poetry", "run", "scripts.update_dependencies:main"])
+
 
 def test() -> None:
     print("> test")

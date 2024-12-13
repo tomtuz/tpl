@@ -9,6 +9,7 @@ def cli() -> None:
     """Default CLI"""
     pass
 
+
 @cli.command()
 @click.argument("args", nargs=-1)
 def config(args):

@@ -47,4 +47,3 @@ def test_tpl_plugin():
     assert result.exit_code in [0, 1]
     if result.exit_code == 1:
         assert "Error:" in result.output
-

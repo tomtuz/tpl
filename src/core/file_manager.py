@@ -3,7 +3,9 @@ import platform
 import shutil
 
 from src.utils.helpers import Logger
+
 logger = Logger.create_logger(f"{__name__}.log", __package__, False)
+
 
 def get_config_dir():
     """Get the configuration directory path based on the operating system."""

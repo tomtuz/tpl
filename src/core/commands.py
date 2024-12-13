@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 
-import importlib.util
 import logging
 import os
 
+import questionary
+import typer
+from rich.console import Console
+
 from src.cli_selector.file import cli_selector_spawn
+from src.core import file_manager
 from src.core.config_manager import get_config_value, list_config_options, remove_config_value, set_config_value
+from src.core.git_manager import clone_repo, select_repository
 from src.core.plugin_manager import (
     get_plugin,
     install_plugin,
@@ -15,47 +20,51 @@ from src.core.plugin_manager import (
     validate_plugin,
 )
 from src.core.spawn_manager import list_templates, spawn_file, spawn_project
-from src.core import file_manager
 from src.utils.command_utils import handle_command_errors, log_command_args, validate_args
 from src.utils.helpers import get_script_dir
-from src.core.git_manager import select_repository, clone_repo
 
 SCRIPT_DIR = get_script_dir()
 logger = logging.getLogger(__name__)
 
-import questionary
-import typer
-from rich.console import Console
 console = Console()
 app = typer.Typer(rich_markup_mode="markdown")
 
 
 class CommandError(Exception):
     """Base exception for command-related errors."""
+
     pass
 
 
 class ConfigError(CommandError):
     """Exception for configuration-related errors."""
+
     pass
 
 
 class SpawnError(CommandError):
     """Exception for spawn-related errors."""
+
     pass
 
 
 class TemplateError(CommandError):
     """Exception for template-related errors."""
+
     pass
+
 
 class RepositoryError(CommandError):
     """Exception for repository-related errors."""
+
     pass
+
 
 class PluginError(CommandError):
     """Exception for plugin-related errors."""
+
     pass
+
 
 # > tpl config get someKey
 # > tpl config remove someKey

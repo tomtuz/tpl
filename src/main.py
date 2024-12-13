@@ -7,7 +7,7 @@ import typer
 from rich.console import Console
 
 from src.cli_selector.file import cli_selector_spawn
-from src.core.commands import cmd_config, cmd_plugin, cmd_spawn, cmd_template, cmd_repository
+from src.core.commands import cmd_config, cmd_plugin, cmd_repository, cmd_spawn, cmd_template
 from src.core.plugin_loader import load_plugins
 from src.utils.helpers import Logger
 
@@ -16,6 +16,7 @@ console = Console()
 
 Logger.create_logger(f"{__name__}.log", __package__, False)
 logger = logging.getLogger(__name__)
+
 
 @app.command()
 def config(
@@ -88,6 +89,7 @@ def plugin(
         logger.error(f"Error in plugin command: {str(e)}")
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
         raise typer.Exit(code=1) from e
+
 
 @app.command()
 def repository():

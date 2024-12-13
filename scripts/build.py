@@ -4,6 +4,7 @@ import subprocess
 
 DIST_DIR = "dist"
 
+
 def run_command(command):
     print(f"\n3. [run_command({command})]...")
     try:
@@ -20,8 +21,8 @@ def clean_old_builds():
     print("\n1. Cleaning old build artifacts...")
 
     if not os.path.exists(DIST_DIR):
-      print("Cleanup completed! (empty)")
-      return
+        print("Cleanup completed! (empty)")
+        return
 
     print("[DEL] folder: [./dist]...")
     shutil.rmtree(DIST_DIR)
@@ -56,6 +57,7 @@ def copy_dist_files():
     except Exception as e:
         print(f"Error copying distribution files: {str(e)}")
         exit(1)
+
 
 def main():
     clean_old_builds()
