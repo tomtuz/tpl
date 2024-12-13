@@ -16,6 +16,11 @@ def get_repositories() -> RepositoryStruct:
             updated="2023-10-01T12:00:00",
             repositories=[
                 {
+                    "name": "Template index",
+                    "description": "tpl",
+                    "url": "https://github.com/tomtuz/tpl.git"
+                },
+                {
                     "name": "Python Project Template",
                     "description": "Poetry",
                     "url": "https://github.com/tomtuz/pybase.git"
